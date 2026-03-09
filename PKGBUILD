@@ -9,7 +9,7 @@ license=('Unlicense')
 depends=('pacman' 'systemd')
 optdepends=('yay: for AUR cache cleanup support')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('SKIP')  # Replace with real checksum after uploading to GitHub
+sha256sums=('5b3794721040c5bc428f6f6113ae6018c9374e0aa3e17b7cd1f3edff82f16040')  # Replace with real checksum after uploading to GitHub
 
 build() {
     cd "$pkgname-$pkgver"
