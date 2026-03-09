@@ -1,0 +1,14 @@
+pkgbase = orphctl
+	pkgdesc = Automatic orphaned package remover for Arch Linux with systemd timer support
+	pkgver = 1.0.0
+	pkgrel = 1
+	url = https://github.com/YOURUSERNAME/orphctl
+	arch = x86_64
+	license = Unlicense
+	depends = pacman
+	depends = systemd
+	optdepends = yay: for AUR cache cleanup support
+	source = orphctl-1.0.0.tar.gz::https://github.com/YOURUSERNAME/orphctl/archive/refs/tags/v1.0.0.tar.gz
+	sha256sums = SKIP
+
+pkgname = orphctl
