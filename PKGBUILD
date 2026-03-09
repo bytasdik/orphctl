@@ -1,30 +1,18 @@
-# Maintainer: Your Name <your@email.com>
+# Maintainer: bytasdik <your@email.com>
 pkgname=orphctl
 pkgver=1.0.0
 pkgrel=1
 pkgdesc="Automatic orphaned package remover for Arch Linux with systemd timer support"
 arch=('x86_64')
 url="https://github.com/bytasdik/orphctl"
-license=('Unlicense')
+license=('MIT')
 depends=('pacman' 'systemd')
-optdepends=('yay: for AUR cache cleanup support')
-source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('5b3794721040c5bc428f6f6113ae6018c9374e0aa3e17b7cd1f3edff82f16040')  # Replace with real checksum after uploading to GitHub
-
-build() {
-    cd "$pkgname-$pkgver"
-    g++ -O2 -o orphctl orphctl.cpp
-}
+optdepends=('yay: for AUR cache cleanup via --aur flag')
+source=("$pkgname-$pkgver-x86_64.tar.gz::$url/releases/download/v$pkgver/$pkgname-$pkgver-x86_64.tar.gz")
+sha256sums=('REPLACEME')  # paste output of: sha256sum orphctl-1.0.0-x86_64.tar.gz
 
 package() {
-    cd "$pkgname-$pkgver"
-
-    # Install the binary
     install -Dm755 orphctl "$pkgdir/usr/bin/orphctl"
-
-    # Install license
-    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-
-    # Install README
-    install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+    install -Dm644 "$srcdir/../LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    install -Dm644 "$srcdir/../README.md" "$pkgdir/usr/share/doc/$pkgname/README.md"
 }

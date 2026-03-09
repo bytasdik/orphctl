@@ -86,4 +86,4 @@ sudo rm /usr/local/bin/orphctl
 
 ## License
 
-This is free and unencumbered software released into the public domain. See [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE) for details.
