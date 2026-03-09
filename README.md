@@ -1,84 +1,89 @@
-# cleanup-orphans
+# orphctl
 
-A simple Bash script for Arch Linux that automatically removes orphaned `pacman` packages every two weeks using a systemd timer.
+A lightweight C++ utility for Arch Linux that automatically removes orphaned packages and cleans your AUR cache every two weeks using a systemd timer.
 
-Orphaned packages are dependencies that were installed alongside other software but are no longer needed by anything. Over time these pile up and waste disk space. This script handles cleanup automatically so you never have to think about it.
+Orphaned packages are dependencies that were installed alongside other software but are no longer needed by anything. Over time these pile up and waste disk space. orphctl handles cleanup automatically so you never have to think about it.
 
 ---
 
 ## Installation
 
-Download the script, make it executable, and run it once as root. That's it — it installs itself and sets up the systemd timer automatically on first run.
-
+### From AUR
 ```bash
-chmod +x cleanup-orphans.sh
-sudo bash cleanup-orphans.sh
+yay -S orphctl
 ```
 
-On first run the script will:
-- Copy itself to `/usr/local/bin/cleanup-orphans.sh`
-- Create a systemd service and timer
-- Enable and start the timer
-- Run the orphan cleanup immediately
+### From GitHub Releases
+Download the latest binary from the [releases page](https://github.com/bytasdik/orphctl/releases), then run the installer:
 
-After that, cleanup runs automatically on the **1st and 15th of every month at 3:00 AM**.
+```bash
+tar -xzvf orphctl-1.0.0-x86_64.tar.gz
+chmod +x install.sh
+./install.sh
+```
+
+### From Source
+```bash
+git clone https://github.com/bytasdik/orphctl.git
+cd orphctl
+chmod +x install.sh
+./install.sh
+```
+
+The installer will compile the binary and place it in `/usr/local/bin/orphctl`. On first run, orphctl sets up the systemd timer automatically.
 
 ---
 
 ## Usage
 
 ```
-sudo cleanup-orphans.sh [OPTION]
+orphctl [OPTION]
 ```
 
 | Command | Description |
 |---|---|
-| `sudo cleanup-orphans.sh` | Run cleanup now. Sets up automation on first run. |
-| `sudo cleanup-orphans.sh --stop` | Disable and remove the automatic cleanup timer. |
-| `sudo cleanup-orphans.sh --stats` | Show timer status and time until next scheduled run. |
-| `cleanup-orphans.sh --help` | Show usage information. |
+| `orphctl` | Remove orphaned packages via pacman. Sets up the systemd timer on first run. |
+| `orphctl --aur` | Remove orphaned packages via pacman + clean yay cache. |
+| `orphctl --stop` | Disable and remove the automatic cleanup timer. |
+| `orphctl --stats` | Show timer status and time until next scheduled run. |
+| `orphctl --help` | Show usage information. |
 
-### Examples
-
-Check when the next cleanup is scheduled:
-```bash
-sudo cleanup-orphans.sh --stats
-```
-
-Disable automatic cleanup entirely:
-```bash
-sudo cleanup-orphans.sh --stop
-```
+No need to prefix with `sudo` — orphctl elevates itself automatically.
 
 ---
 
 ## How It Works
 
-The script runs `pacman -R $(pacman -Qdtq)` which:
-1. Uses `pacman -Qdtq` to list all orphaned packages quietly
-2. Passes them to `pacman -R` to remove them
+orphctl runs `pacman -R $(pacman -Qdtq)` to remove all orphaned packages. With `--aur` it also runs `yay -Scc` to clean the AUR cache.
 
-Scheduling is handled entirely by **systemd**, so it respects your system even if it was powered off at the scheduled time — it will catch up on the next boot thanks to `Persistent=true` in the timer.
+Scheduling is handled entirely by systemd, firing on the **1st and 15th of every month at 3:00 AM**. Thanks to `Persistent=true` in the timer, if your machine was off at the scheduled time it will catch up on the next boot.
+
+The systemd service remembers which mode you used on first run — if you ran `orphctl --aur`, the timer will also run in AUR mode automatically.
 
 ---
 
 ## Uninstalling
 
 ```bash
-sudo cleanup-orphans.sh --stop
-sudo rm /usr/local/bin/cleanup-orphans.sh
+./uninstall.sh
+```
+
+Or if you no longer have the repo:
+```bash
+orphctl --stop
+sudo rm /usr/local/bin/orphctl
 ```
 
 ---
 
 ## Requirements
 
-- Arch Linux (or any Arch-based distro)
-- systemd
-- Root / sudo access
+- Arch Linux (or any Arch-based distro with systemd)
+- `g++` — for building from source
+- `yay` — optional, only needed for `--aur` mode
 
 ---
 
 ## License
 
-Do whatever you want with it.
+This is free and unencumbered software released into the public domain. See [LICENSE](LICENSE) for details.
